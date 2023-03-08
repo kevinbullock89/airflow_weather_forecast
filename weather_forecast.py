@@ -3,7 +3,7 @@ import requests
 import rapidapi
 
 # RapidAPI
-X_RapidAPI_Key = rapidapi.Key # here is the Rapid API Key
+X_RapidAPI_Key = rapidapi.Key # here is the Rapid API Key comming from a different python file
 
 
 class ForecastData:
