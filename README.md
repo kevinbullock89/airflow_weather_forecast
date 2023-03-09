@@ -49,16 +49,20 @@ To clone this repository, open your terminal and navigate to the directory where
 ```sh
 git clone https://github.com/kevinbullock89/etl_weather_forecast.git
 ```
+### MySQL database
+
+It is assumed that there is already a MySQL database. It must be ensured that Airflow has the ability to access the MySQL database. 
+
 ### Create a connection in Airflow to your MySQL database. 
 
 You can do this through the Airflow UI by navigating to Admin > Connections and clicking the Create button. Enter the following details:
 
 - Conn Id: Azure_MySQL_Weather
 - Conn Type: MySQL
-- Host: your MySQL server address
-- Schema: your MySQL database name
-- Login: your MySQL username
-- Password: your MySQL password
+- Host: (#your MySQL server address)
+- Schema: (#your MySQL database name)
+- Login: (#your MySQL username)
+- Password: (#your MySQL password)
 
 ### Define your RapidAPI key:
 
@@ -69,6 +73,30 @@ X_RapidAPI_Key = "your_RapidAPI_key"
 ```
 
 To hide API key in a Python file, it is also possible to use of environment variables.
+
+### Python packages
+
+These Python packages must be installed:
+
+- mysql-connector-python:
+
+```sh
+pip install mysql-connector-python
+```
+
+- apache-airflow:
+
+```sh
+pip install apache-airflow
+```
+
+- pandas:
+```sh
+pip install pandas
+```
+
+The PythonOperator is part of the core Airflow package.
+
 
 ## Python Scripts
 
@@ -97,4 +125,7 @@ To use this repository, simply browse the files and documentation included in th
 4. Push to the branch: git push origin my-feature.
 5. Submit a pull request to this repository.
 
+## License
+
+This project is licensed under the MIT License.
 
