@@ -59,10 +59,10 @@ You can do this through the Airflow UI by navigating to Admin > Connections and 
 
 - Conn Id: Azure_MySQL_Weather
 - Conn Type: MySQL
-- Host: (#your MySQL server address)
-- Schema: (#your MySQL database name)
-- Login: (#your MySQL username)
-- Password: (#your MySQL password)
+- Host: your MySQL server address
+- Schema: your MySQL database name
+- Login: your MySQL username
+- Password: your MySQL password
 
 ### Define your RapidAPI key:
 
@@ -127,5 +127,5 @@ To use this repository, simply browse the files and documentation included in th
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. Please have a look at the [LICENSE.md](LICENSE.md) for more details.
 
