@@ -127,5 +127,5 @@ To use this repository, simply browse the files and documentation included in th
 
 ## License
 
-This project is licensed under the MIT License. Please have a look at the [LICENSE.md](LICENSE.md) for more details.
+This project is licensed under the MIT License.
 
