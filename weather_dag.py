@@ -22,17 +22,24 @@ dag = DAG(
 
 
 CreateTable = MySqlOperator(
-    task_id = 'create_postgres_table',
+    task_id = 'create_mysql_table',
     mysql_conn_id = 'Azure_MySQL_Weather',
     sql = '''
-        CREATE TABLE IF NOT EXISTS `weather_forecast` (
-        `Forecast_Date` date NOT NULL,
-        `AVG_Temperature` int(11) DEFAULT NULL,
-        `Source` varchar(25) COLLATE utf8_bin NOT NULL,
-        `Ingest_Timestamp` datetime NOT NULL,
-        `City` varchar(25) COLLATE utf8_bin NOT NULL,
-        PRIMARY KEY (`Forecast_Date`,`Source`,`Ingest_Timestamp`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+    CREATE TABLE IF NOT EXISTS `weather_forecast` (
+    `Forecast_Date` date NOT NULL,
+    `AVG_Temperature` int(11) DEFAULT NULL,
+    `Source` varchar(25) COLLATE utf8_bin NOT NULL,
+    `Ingest_Timestamp` datetime NOT NULL,
+    `City` varchar(25) COLLATE utf8_bin NOT NULL,
+    PRIMARY KEY (`Forecast_Date`,`Source`,`Ingest_Timestamp`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+    CREATE TABLE IF NOT EXISTS `weather_avg_temperature` (
+    `Forecast_Date` date NOT NULL,
+    `AVG_Temperature` decimal(14,4) NOT NULL,
+    `City` varchar(25) COLLATE utf8_bin NOT NULL,
+    PRIMARY KEY (`Forecast_Date`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
     '''
 )
 
@@ -78,6 +85,18 @@ LoadVisualCrossing = PythonOperator(
     dag=dag,
 )
 
+LoadWeatherTable = MySqlOperator(
+    task_id = 'load_mysql_weather_table',
+    mysql_conn_id = 'Azure_MySQL_Weather',
+    sql = '''
+        INSERT INTO weather.weather_avg_temperature (Forecast_Date, AVG_Temperature, City)
+            select Forecast_Date , avg(AVG_Temperature) as AVG_Temperature, City 
+            from weather.weather_forecast wf 
+            where Forecast_Date = current_date()
+            group by Forecast_Date, City 
+        ON DUPLICATE KEY UPDATE AVG_Temperature = VALUES(AVG_Temperature);
+    '''
+)
 
 # Run DAG
-CreateTable >> LoadDataWeatherbit  >> LoadVisualCrossing >> LoadDataWetter_com
+CreateTable >> LoadDataWeatherbit  >> LoadVisualCrossing >> LoadDataWetter_com >> LoadWeatherTable
