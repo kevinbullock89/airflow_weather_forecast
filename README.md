@@ -3,6 +3,8 @@
 Weather Forecast DAG
 This is an Airflow DAG (Directed Acyclic Graph) that retrieves and stores weather forecast data for the city of Berlin from different weather APIs (Application Programming Interfaces).
 
+The aim is to compare the individual weather forecasts with each other.
+
 ![image](https://github.com/kevinbullock89/etl_weather_forecast/blob/master/Weather_DAG.PNG)
 
 ## Prerequisites:
@@ -112,6 +114,45 @@ This file contains the functions that retrieve weather forecast data from three 
 
 This file contains several utility functions that are used by the weather_forecast.py file to process and load data. These functions include a function that loads data into a MySQL database and a function that processes forecast data.
 
+## SQL scripts
+
+The SQL scripts are located in the SQL_Scripts folder.
+
+### Weather_Forecast_Differences.sql
+
+Here can be compared how the individual forecasts, with the actual weather temperature was correct or not correct:
+
+```sh
+SELECT wf.Forecast_Date
+	,wf.AVG_Temperature AS 'Forecast_Temperature'
+	,wat.AVG_Temperature AS 'Actual_Temperature'
+	,wf.AVG_Temperature - wat.AVG_Temperature AS 'Temperature_Difference'
+	,wf.Source
+	,wf.City
+	,wf.Ingest_Timestamp
+FROM weather.weather_forecast wf
+LEFT JOIN weather.weather_avg_temperature wat ON wf.Forecast_Date = wat.Forecast_Date
+	AND wf.City = wat.City
+ORDER BY wf.City
+	,wf.Source
+	,wf.Forecast_Date
+	,wf.Ingest_Timestamp
+```
+
+### Weather_Forecast_Differences.sql
+
+This indicates in sum how correctly the individual weather forecasts work:
+
+```sh
+SELECT sum(wf.AVG_Temperature) - sum(wat.AVG_Temperature) AS 'Temperature_Difference'
+	,wf.Source
+	,wf.City
+FROM weather.weather_forecast wf
+LEFT JOIN weather.weather_avg_temperature wat ON wf.Forecast_Date = wat.Forecast_Date
+	AND wf.City = wat.City
+GROUP BY wf.Source
+	,wf.City
+```
 
 ## Usage
 
